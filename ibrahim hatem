@@ -1,0 +1,79 @@
+// Flight class to represent flight data
+class Flight {
+  final String flightId;
+  final DateTime time;
+  final double altitude;
+  final double speed;
+  final bool isArrival;
+
+  Flight({
+    required this.flightId,
+    required this.time,
+    required this.altitude,
+    required this.speed,
+    required this.isArrival,
+  });
+
+  @override
+  String toString() {
+    return 'Flight $flightId (${isArrival ? "Arrival" : "Departure"}) - Time: ${time.hour}:${time.minute}, Alt: $altitude ft, Speed: $speed knots';
+  }
+}
+
+// Simplified flight sorter
+class FlightSorter {
+  // Sort flights by time (ascending)
+  List<Flight> sortByTime(List<Flight> flights) {
+    flights.sort((a, b) => a.time.compareTo(b.time));
+    return flights;
+  }
+
+  // Sort flights by priority (arrivals first, then by time)
+  List<Flight> sortByPriority(List<Flight> flights) {
+    flights.sort((a, b) {
+      if (a.isArrival != b.isArrival) {
+        return a.isArrival ? -1 : 1; // Arrivals come first
+      }
+      return a.time.compareTo(b.time); // Then sort by time
+    });
+    return flights;
+  }
+}
+
+void main() {
+  // Sample flight data
+  final flights = [
+    Flight(
+      flightId: 'AA123',
+      time: DateTime(2023, 12, 25, 10, 30),
+      altitude: 35000,
+      speed: 480,
+      isArrival: true,
+    ),
+    Flight(
+      flightId: 'UA456',
+      time: DateTime(2023, 12, 25, 9, 15),
+      altitude: 32000,
+      speed: 520,
+      isArrival: false,
+    ),
+    Flight(
+      flightId: 'DL789',
+      time: DateTime(2023, 12, 25, 11, 45),
+      altitude: 30000,
+      speed: 450,
+      isArrival: true,
+    ),
+  ];
+
+  final sorter = FlightSorter();
+
+  print('=== Original Order ===');
+  flights.forEach(print);
+
+  print('\n=== Sorted by Time ===');
+  sorter.sortByTime([...flights]).forEach(print);
+
+  print('\n=== Sorted by Priority ===');
+  sorter.sortByPriority([...flights]).forEach(print);
+}
